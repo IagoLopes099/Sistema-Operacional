@@ -23,7 +23,7 @@ O projeto é desenvolvido na linguagem C, com trechos em Assembly quando necess�
 * GRUB
 * GCC
 * GNU Make
-* QEMU ou VirtualBox
+* VirtualBox
 * Ubuntu Linux
 
 ## Referência

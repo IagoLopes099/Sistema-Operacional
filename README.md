@@ -2,11 +2,11 @@
 
 ## Descrição do Projeto
 
-O MyOS é um sistema operacional educacional desenvolvido como parte da disciplina de Sistemas Operacionais. O projeto tem como objetivo compreender os conceitos fundamentais do funcionamento de um sistema operacional por meio da implementação prática de seus componentes básicos.
+O MyOS é um sistema operacional educacional desenvolvido como parte da disciplina de Sistemas Operacionais. O objetivo do projeto é compreender os conceitos fundamentais do funcionamento de um sistema operacional por meio da implementação prática de seus componentes básicos.
 
-O desenvolvimento segue como referência o livro *The Little Book About OS Development*, abordando tópicos como processo de boot, carregamento do kernel, utilização do GRUB, gerenciamento de memória, interrupções, drivers e demais mecanismos essenciais de um sistema operacional.
+O desenvolvimento utiliza como principal referência o livro *The Little Book About OS Development*, que serve como base teórica e prática para a construção do sistema.
 
-O projeto é desenvolvido na linguagem C, com trechos em Assembly quando necessário, sendo executado em ambiente virtual para testes e validação.
+O projeto é desenvolvido em linguagem C, com trechos em Assembly quando necessário, sendo executado em ambiente virtual para testes e validação.
 
 ## Objetivos
 
@@ -14,18 +14,88 @@ O projeto é desenvolvido na linguagem C, com trechos em Assembly quando necess�
 * Desenvolver um kernel simples.
 * Estudar a interação entre hardware e software em baixo nível.
 * Implementar mecanismos fundamentais de um sistema operacional.
-* Aplicar conceitos teóricos estudados em sala de aula.
+* Aplicar os conceitos estudados na disciplina de Sistemas Operacionais.
 
-## Tecnologias Utilizadas
+---
 
-* Linguagem C
-* Assembly x86
-* GRUB
+## Imagem da Interface
+
+O sistema atualmente possui uma interface em modo texto executada durante a inicialização do sistema operacional.
+
+> Inserir aqui uma captura de tela do sistema em execução.
+
+```markdown
+![Interface do MyOS](images/myos.png)
+```
+
+---
+
+## Dependências
+
+Para compilar e executar o projeto são necessários:
+
 * GCC
-* GNU Make
-* VirtualBox
-* Ubuntu Linux
+* NASM
+* GRUB
+* xorriso
+* QEMU
 
-## Referência
+No Ubuntu ou Debian:
 
-The Little Book About OS Development.
+```bash
+sudo apt update
+sudo apt install build-essential nasm grub-pc-bin xorriso qemu-system-x86
+```
+
+---
+
+## Compilação
+
+Para compilar o projeto:
+
+```bash
+make
+```
+
+Caso o projeto não utilize Makefile, os comandos podem variar conforme a estrutura dos arquivos.
+
+---
+
+## Execução
+
+Para gerar a imagem ISO:
+
+```bash
+grub-mkrescue -o os.iso iso
+```
+
+Para executar no QEMU:
+
+```bash
+qemu-system-i386 -cdrom os.iso
+```
+
+---
+
+## Instruções de Uso
+
+1. Compile o projeto.
+2. Gere a imagem ISO.
+3. Execute o sistema utilizando o QEMU.
+4. Aguarde o carregamento do kernel.
+5. Observe e teste as funcionalidades implementadas durante o desenvolvimento.
+
+---
+
+## Divisão das Atividades
+
+| Matrícula   | Integrante                  | Responsabilidades                                                                                                                       |
+| ----------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 20240036909 | Iago Vitor Lopes das Chagas | Configuração do ambiente de desenvolvimento, implementação do código, compilação e execução dos testes do sistema.                      |
+| 20230157858 | Kezia da Silva Pessoa       | Pesquisa e análise de problemas encontrados, auxílio na depuração, testes, documentação e acompanhamento do desenvolvimento do sistema. |
+
+## Referências
+
+* The Little Book About OS Development.
+* Material da disciplina de Sistemas Operacionais.
+* Documentação do GCC, NASM, GRUB e QEMU.

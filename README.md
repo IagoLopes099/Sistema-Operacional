@@ -89,12 +89,10 @@ qemu-system-i386 -cdrom os.iso
 
 ## Divisão das Atividades
 
-| Integrante | Responsabilidades                                                                                                                                   |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Aluno 1    | Configuração do ambiente, implementação do código, compilação e execução dos testes do sistema.                                                     |
-| Aluno 2    | Pesquisa de soluções para erros encontrados, auxílio na depuração, validação das etapas do desenvolvimento e elaboração da documentação do projeto. |
-
----
+| Matrícula   | Integrante                  | Responsabilidades                                                                                                                       |
+| ----------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 20240036909 | Iago Vitor Lopes das Chagas | Configuração do ambiente de desenvolvimento, implementação do código, compilação e execução dos testes do sistema.                      |
+| 20230157858 | Kezia da Silva Pessoa       | Pesquisa e análise de problemas encontrados, auxílio na depuração, testes, documentação e acompanhamento do desenvolvimento do sistema. |
 
 ## Referências
 

@@ -7,10 +7,10 @@
 #define FB_HIGH_BYTE_COMMAND    14
 #define FB_LOW_BYTE_COMMAND     15
 
-#define FB_GREEN     2
-#define FB_DARK_GREY 8
+#define FB_BACKGROUND     0 // fundo preto
+#define FB_LETTER 15 // letra 
 
-static char *fb = (char *) FB_ADDRESS;
+char *fb = (char *) FB_ADDRESS;
 
 void fb_move_cursor(unsigned short pos)
 {
@@ -28,12 +28,37 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg)
 }
 
 
+#define FB_COLUMNS 80
+#define FB_ROWS    25
+
+/* Guarda a posição (em células) de onde a próxima escrita deve começar.
+ * Sem isso, cada chamada de write() reescreveria a partir da célula 0. */
+static unsigned int fb_position = 0;
+
 int fb_write(char *buf, unsigned int len) // funcao para escrever na tela
 {
     unsigned int i;
-    for(i = 0; i< len; i++){
-        fb_write_cell(i*2, buf[i], FB_GREEN, FB_DARK_GREY);
+    for (i = 0; i < len; i++) {
+        if (buf[i] == '\n') {
+            fb_position = (fb_position / FB_COLUMNS + 1) * FB_COLUMNS;
+            continue;
+        }
+        if (buf[i] == '\b') {
+            if (fb_position > 0) {
+                fb_position--;
+                fb_write_cell(fb_position * 2, ' ', FB_BACKGROUND, FB_LETTER);
+            }
+            continue;
+        }
+
+        fb_write_cell(fb_position * 2, buf[i], FB_BACKGROUND, FB_LETTER);
+        fb_position++;
     }
-    fb_move_cursor(len);
+
+    if (fb_position >= FB_COLUMNS * FB_ROWS) {
+        fb_position = 0; // TODO: implementar scroll de verdade no lugar disso
+    }
+
+    fb_move_cursor(fb_position);
     return i;
 }

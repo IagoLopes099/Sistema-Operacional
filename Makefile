@@ -11,10 +11,12 @@ all: kernel.elf
 kernel.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
-os.iso: kernel.elf
+os.iso: kernel.elf program
+	mkdir -p iso/modules
 	cp kernel.elf iso/boot/kernel.elf
+	cp program iso/modules/program
 	genisoimage -R                              \
-  	          -b boot/grub/stage2_eltorito    \
+	          -b boot/grub/stage2_eltorito    \
                 -no-emul-boot                   \
                 -boot-load-size 4               \
                 -A os                           \
@@ -24,8 +26,11 @@ os.iso: kernel.elf
                 -o os.iso                       \
                 iso
 
+program: program.s
+	nasm -f bin program.s -o program
+
 run: os.iso
-	qemu-system-i386 -cdrom os.iso -serial file:com1.out -k pt-br
+	qemu-system-i386 -cdrom os.iso -serial file:com1.out -k pt-br -no-reboot -no-shutdown -d int,cpu_reset -D qemu.log
 
 %.o: %.c
 	$(CC) $(CFLAGS)  $< -o $@

@@ -21,6 +21,9 @@ typedef struct multiboot_module {
     unsigned int reserved;
 } multiboot_module_t;
 
+/* bit 0 das flags = "mem_lower / mem_upper validos" */
+#define MULTIBOOT_FLAG_MEMINFO 0x00000001
+
 /* bit 3 das flags = "modules loaded" */
 #define MULTIBOOT_FLAG_MODS 0x00000008
 

@@ -31,6 +31,16 @@ unsigned int pfa_alloc_frame(void);
  */
 void pfa_free_frame(unsigned int frame_addr);
 
+/** pfa_reserve_region:
+ *  Marca uma faixa arbitraria de memoria fisica como ocupada, para que
+ *  pfa_alloc_frame() nunca a entregue. Util para reservar regioes usadas
+ *  fora do fluxo normal de alocacao de frames (ex: cap. 11, modo usuario).
+ *
+ *  @param addr   Endereco fisico inicial da faixa
+ *  @param length Tamanho da faixa em bytes
+ */
+void pfa_reserve_region(unsigned int addr, unsigned int length);
+
 /** pfa_free_frame_count:
  *  @return Quantos frames ainda estao livres.
  */

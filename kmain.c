@@ -8,6 +8,7 @@
 #include "multiboot.h"
 #include "pfa.h"
 #include "kheap.h"
+#include "user.h"
 
 #define SERIAL_COM1_BASE 0x3F8
 
@@ -79,6 +80,16 @@ void kmain(unsigned int ebx)
     fb_write("Hello world! Digite algo:\n", 27);
 
     enable_interrupts();
+
+    /* cap. 11: prepara o processo de usuario (a partir do modulo do GRUB,
+     * infraestrutura do cap. 7) e salta pra modo usuario (anel 3). Se der
+     * certo essa chamada NUNCA retorna - o resto do kernel (o loop de
+     * hlt abaixo, que mantem o teclado responsivo) vira uma rede de
+     * seguranca caso o modulo nao seja encontrado. */
+    serial_write("Cap 11: preparando processo de modo usuario...\n", 48);
+    if (user_mode_start(mbinfo) != 0) {
+        serial_write("Cap 11: nao foi possivel entrar em modo usuario.\n", 50);
+    }
 
     while (1) {
         __asm__ volatile ("hlt"); /* dorme ate a proxima interrupcao chegar */

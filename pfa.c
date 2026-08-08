@@ -61,6 +61,17 @@ static void mark_region_used(unsigned int addr, unsigned int length)
     }
 }
 
+/** pfa_reserve_region:
+ *  Versao publica de mark_region_used(), pra codigo fora deste arquivo
+ *  reservar uma faixa de memoria fisica que sera usada por fora do
+ *  fluxo normal de pfa_alloc_frame() (ex: a regiao dedicada ao processo
+ *  de modo usuario do cap. 11).
+ */
+void pfa_reserve_region(unsigned int addr, unsigned int length)
+{
+    mark_region_used(addr, length);
+}
+
 void pfa_init(multiboot_info_t *mbinfo)
 {
     unsigned int i;

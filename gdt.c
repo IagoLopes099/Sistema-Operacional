@@ -1,6 +1,6 @@
 #include "gdt.h"
 
-#define GDT_ENTRIES 3
+#define GDT_ENTRIES 5
 
 /* Um descritor de segmento (8 bytes), no formato que o hardware espera */
 struct gdt_entry {
@@ -64,6 +64,17 @@ void gdt_install(void)
      * access = 0x92 (present, PL0, read/write)
      */
     gdt_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
+
+    /* índice 3 (offset 0x18): user code segment (cap. 11.1)
+     * access = 0xFA (present, PL3, execute/read) - igual ao kernel code
+     * segment, so muda o DPL pra 3
+     */
+    gdt_set_entry(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);
+
+    /* índice 4 (offset 0x20): user data segment (cap. 11.1)
+     * access = 0xF2 (present, PL3, read/write)
+     */
+    gdt_set_entry(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
     load_gdt((unsigned int) &gp);
 }

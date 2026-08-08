@@ -4,6 +4,7 @@
 
 #define PAGE_PRESENT  0x1   /* bit 0: pagina presente */
 #define PAGE_RW       0x2   /* bit 1: leitura e escrita */
+#define PAGE_USER     0x4   /* bit 2: acessivel em qualquer nivel de privilegio (PL3) */
 #define PAGE_SIZE_4MB 0x80  /* bit 7: esta entrada aponta pra uma pagina de 4MB */
 
 /* Onde o kernel enxerga a si mesmo na memoria virtual (higher half).
@@ -54,4 +55,28 @@ void paging_install(void)
 
     load_page_directory(pd_physical_address);
     enable_paging();
+}
+
+/** paging_allow_user_access:
+ *  Marca a entrada do page directory (de 4MB) que cobre o endereco virtual
+ *  dado como acessivel em PL3 (cap. 11.2). Como esse projeto usa paginas
+ *  de 4MB (PSE) em vez de page tables de 4KB (cap. 9), essa e a menor
+ *  granularidade de protecao que temos: liberar acesso do modo usuario a
+ *  um endereco libera a regiao inteira de 4MB que o contem.
+ *
+ *  @param virtual_addr Qualquer endereco virtual dentro da regiao de 4MB
+ *                       que deve virar acessivel para o modo usuario
+ */
+void paging_allow_user_access(unsigned int virtual_addr)
+{
+    unsigned int pde_index = virtual_addr >> 22;
+    unsigned int pd_physical_address;
+
+    page_directory[pde_index] |= PAGE_USER;
+
+    /* recarrega cr3 com o mesmo endereco fisico so pra invalidar a TLB -
+     * sem isso o processador poderia continuar usando a entrada antiga
+     * (sem PAGE_USER) que ja tinha em cache */
+    pd_physical_address = (unsigned int) page_directory - KERNEL_VIRTUAL_BASE;
+    load_page_directory(pd_physical_address);
 }

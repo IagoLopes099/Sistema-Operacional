@@ -1,42 +1,40 @@
-OBJECTS = loader.o kmain.o fb.o io.o serial.o gdt.o gdt_asm.o idt.o isr.o interrupt.o pic.o keyboard.o paging.o paging_asm.o pfa.o kheap.o user.o user_asm.o
+OBJECTS = loader.o kmain.o gdt.o gdt_asm.o idt.o isr.o interrupt.o pic.o keyboard.o fb.o \
+          serial.o timer.o kheap.o pfa.o process.o process_switch.o shell.o io.o
+
 CC = gcc
-CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-         -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
-LDFLAGS = -T link.ld -melf_i386
+CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -fno-pie -fno-pic \
+         -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c -g
+
+LDFLAGS = -T link.ld -m elf_i386
 AS = nasm
 ASFLAGS = -f elf32
 
-all: kernel.elf
+all: kernel.elf os.iso
 
 kernel.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
-os.iso: kernel.elf program
-	mkdir -p iso/modules
-	cp kernel.elf iso/boot/kernel.elf
-	cp program iso/modules/program
-	genisoimage -R                              \
-	          -b boot/grub/stage2_eltorito    \
-                -no-emul-boot                   \
-                -boot-load-size 4               \
-                -A os                           \
-                -input-charset utf8             \
-                -quiet                          \
-                -boot-info-table                \
-                -o os.iso                       \
-                iso
-
-program: program.s
-	nasm -f bin program.s -o program
-
-run: os.iso
-	qemu-system-i386 -cdrom os.iso -serial file:com1.out -k pt-br -no-reboot -no-shutdown -d int,cpu_reset -D qemu.log
-
 %.o: %.c
-	$(CC) $(CFLAGS)  $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
 
+os.iso: kernel.elf
+	cp kernel.elf iso/boot/kernel.elf
+	genisoimage -R                              \
+	            -b boot/grub/stage2_eltorito    \
+	            -no-emul-boot                   \
+	            -boot-load-size 4               \
+	            -A os                           \
+	            -input-charset utf8             \
+	            -quiet                          \
+	            -boot-info-table                \
+	            -o os.iso                       \
+	            iso
+
+run: os.iso
+	qemu-system-i386 -cdrom os.iso
+
 clean:
-	rm -rf *.o kernel.elf os.iso
+	rm -rf *.o kernel.elf iso/boot/kernel.elf os.iso

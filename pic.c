@@ -34,7 +34,7 @@ void pic_remap(void)
     outb(PIC2_DATA_PORT, ICW4_8086);
 
     /* máscaras: por enquanto só o teclado (IRQ1) fica habilitado */
-    outb(PIC1_DATA_PORT, 0xFD); /* 1111 1101 */
+    outb(PIC1_DATA_PORT, 0xFC); /* 1111 1100: IRQ0 (timer) e IRQ1 (teclado) */
     outb(PIC2_DATA_PORT, 0xFF); /* PIC2 todo desabilitado */
 }
 

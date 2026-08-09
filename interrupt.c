@@ -1,7 +1,10 @@
 #include "interrupt.h"
 #include "pic.h"
 #include "keyboard.h"
+#include "timer.h"
+#include "process.h"
 
+#define TIMER_INTERRUPT    32   /* IRQ0 remapeada = 0x20 */
 #define KEYBOARD_INTERRUPT 33   /* IRQ1 remapeada = 0x21 */
 
 /** interrupt_handler:
@@ -10,12 +13,12 @@
  */
 void interrupt_handler(unsigned int interrupt)
 {
-    if (interrupt == KEYBOARD_INTERRUPT) {
+    if (interrupt == TIMER_INTERRUPT) {
+        timer_handler();
+        process_account_tick();
+    } else if (interrupt == KEYBOARD_INTERRUPT) {
         keyboard_handler();
     }
-
-    /* outras interrupções (exceções, timer, etc.) podem ser tratadas aqui
-     * conforme você for implementando mais coisas */
 
     pic_acknowledge(interrupt);
 }

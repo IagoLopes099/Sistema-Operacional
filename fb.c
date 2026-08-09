@@ -12,8 +12,14 @@
 
 char *fb = (char *) FB_ADDRESS;
 
+/* Posição lógica usada por fb_write(). Deve acompanhar o cursor VGA,
+ * principalmente quando uma tela é limpa e o cursor volta para 0. */
+static unsigned int fb_position = 0;
+
 void fb_move_cursor(unsigned short pos)
 {
+	fb_position = pos;
+
 	outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
 	outb(FB_DATA_PORT,    ((pos >> 8) & 0x00FF));
 	outb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
@@ -30,10 +36,6 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg)
 
 #define FB_COLUMNS 80
 #define FB_ROWS    25
-
-/* Guarda a posição (em células) de onde a próxima escrita deve começar.
- * Sem isso, cada chamada de write() reescreveria a partir da célula 0. */
-static unsigned int fb_position = 0;
 
 int fb_write(char *buf, unsigned int len) // funcao para escrever na tela
 {
